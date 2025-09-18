@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
-import axios from "axios";
 import { useLeadContext } from "../../../context";
+import axiosInstance from "../../../api/axios";
+import { toast } from "react-toastify";
 
 const AddLead = ({ onClose }) => {
   const { setLeadAdded, leadAdded } = useLeadContext();
@@ -34,31 +35,33 @@ const AddLead = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/lead/createLead",
-        {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          status: formData.status,
-          alternatePhone: formData.alternatePhone,
-          alternateEmail: formData.alternateEmail,
-          qualification: formData.qualification,
-          interestField: formData.interestField,
-          source: formData.source,
-          assignedTo: formData.assignedTo,
-          jobInterest: formData.jobInterest,
-          state: formData.state,
-          city: formData.city,
-          passoutYear: Number(formData.passoutYear),
-          heardFrom: formData.heardFrom,
-        }
-      );
+      const response = await axiosInstance.post("/lead/createLead", {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        status: formData.status,
+        alternatePhone: formData.alternatePhone,
+        alternateEmail: formData.alternateEmail,
+        qualification: formData.qualification,
+        interestField: formData.interestField,
+        source: formData.source,
+        assignedTo: formData.assignedTo,
+        jobInterest: formData.jobInterest,
+        state: formData.state,
+        city: formData.city,
+        passoutYear: Number(formData.passoutYear),
+        heardFrom: formData.heardFrom,
+      });
       setLeadAdded(!leadAdded);
       console.log("Lead Created:", response.data);
-      onClose(); // Close modal after successful submit
+
+      toast.success("Lead created successfully...", { autoClose: 3000 });
+      onClose(); 
     } catch (error) {
       console.error("Error creating lead:", error);
+      toast.error(error.response?.data?.message || "Failed to create lead...", {
+        autoClose: 3000,
+      });
     }
   };
 
@@ -72,7 +75,6 @@ const AddLead = ({ onClose }) => {
 
         {/* Form */}
         <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
-          {/* Row 1 */}
           <div className="flex flex-col">
             <label htmlFor="name" className="mb-1 font-bold ">
               Name
@@ -102,8 +104,6 @@ const AddLead = ({ onClose }) => {
               required
             />
           </div>
-
-          {/* Row 2 */}
           <div className="flex flex-col">
             <label htmlFor="alternatePhone" className="mb-1 font-bold">
               Alt. Phone
@@ -132,8 +132,6 @@ const AddLead = ({ onClose }) => {
               required
             />
           </div>
-
-          {/* Row 3 */}
           <div className="flex flex-col">
             <label htmlFor="alternateEmail" className="mb-1 font-bold">
               Alt. Email
@@ -166,8 +164,6 @@ const AddLead = ({ onClose }) => {
               <option value="Follow-Up">Follow-Up</option>
             </select>
           </div>
-
-          {/* Row 4 */}
           <div className="flex flex-col">
             <label htmlFor="qualification" className="mb-1 font-bold">
               Qualification
@@ -206,8 +202,6 @@ const AddLead = ({ onClose }) => {
               <option value="fullStack">Full Stack Development</option>
             </select>
           </div>
-
-          {/* Row 5 */}
           <div className="flex flex-col">
             <label htmlFor="source" className="mb-1 font-bold">
               Source
@@ -244,8 +238,6 @@ const AddLead = ({ onClose }) => {
               <option value="manager1">Manager1</option>
             </select>
           </div>
-
-          {/* Row 6 */}
           <div className="flex flex-col">
             <label htmlFor="jobInterest" className="mb-1 font-bold">
               Job Interest
@@ -276,8 +268,6 @@ const AddLead = ({ onClose }) => {
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* Row 7 */}
           <div className="flex flex-col">
             <label htmlFor="city" className="mb-1 font-bold">
               City
@@ -305,8 +295,6 @@ const AddLead = ({ onClose }) => {
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          {/* Row 8 (full width) */}
           <div className="flex flex-col col-span-2">
             <label htmlFor="heardFrom" className="mb-1 font-bold">
               Heard From

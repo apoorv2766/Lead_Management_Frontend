@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LeadForm />} />
           {/* <Route path='/showLeads' element={<ShowLeads/>}/> */}
-          <Route path="/filter" element={<Filter />} />
+          {/* <Route path="/filter" element={<Filter />} /> */}
         </Routes>
       </BrowserRouter>
       <ToastContainer position="top-right" autoClose={3000} theme="colored" />

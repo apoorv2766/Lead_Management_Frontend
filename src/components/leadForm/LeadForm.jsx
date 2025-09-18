@@ -9,11 +9,11 @@ import {
   Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 import { LuArrowUpDown } from "react-icons/lu";
-import axios from "axios";
 import { FiFilter } from "react-icons/fi";
 import AddLead from "../showLeads/AddLeads";
 import Filter from "../filter/Filter";
 import { useLeadContext } from "../../../context";
+import axiosInstance from "../../../api/axios";
 
 export default function LeadCRM({}) {
   const [leads, setLeads] = useState([]);
@@ -27,18 +27,16 @@ export default function LeadCRM({}) {
   const [showAddLead, setShowAddLead] = useState(false);
   const [filterDisplay, setFilterDisplay] = useState(false);
 
-  const { leadAdded,setSearchTerm,searchTerm } = useLeadContext();
+  const { leadAdded, setSearchTerm, searchTerm } = useLeadContext();
 
-
-  console.log("searchTermsearchTerm",searchTerm);
-  
+  console.log("searchTermsearchTerm", searchTerm);
 
   const fetchLeads = async (pageNum = 1) => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/v1/lead/showLeads?page=${pageNum}&limit=10`
-      );
+      const res = await axiosInstance.get(`/lead/showLeads`, {
+        params: { page: pageNum, limit: 10 },
+      });
       setLeads(res.data.leads);
       setTotalPages(res.data.totalPages);
       setPage(res.data.currentPage);
@@ -76,7 +74,7 @@ export default function LeadCRM({}) {
     );
   };
 
-  const filteredLeads = leads.filter((lead) => {
+  const filteredLeads = leads?.filter((lead) => {
     const nameMatch = lead.name
       ?.toLowerCase()
       .includes(searchTerm.toLowerCase());
@@ -215,8 +213,8 @@ export default function LeadCRM({}) {
             </thead>
 
             <tbody>
-              {filteredLeads.length > 0 ? (
-                filteredLeads.map((lead) => (
+              {filteredLeads?.length > 0 ? (
+                filteredLeads?.map((lead) => (
                   <tr
                     key={lead._id}
                     className="bg-white border-b border-gray-200 hover:bg-gray-50"
@@ -311,7 +309,10 @@ export default function LeadCRM({}) {
       {showAddLead && <AddLead onClose={() => setShowAddLead(false)} />}
       {filterDisplay && (
         <div className="fixed inset-0 z-50  backdrop-blur-xs">
-          <Filter onClose={() => setFilterDisplay(false)} searchTerm={searchTerm} />
+          <Filter
+            onClose={() => setFilterDisplay(false)}
+            searchTerm={searchTerm}
+          />
         </div>
       )}
     </div>

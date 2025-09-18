@@ -2,27 +2,14 @@ import React, { use, useEffect, useState } from "react";
 import { FiFilter, FiSearch } from "react-icons/fi";
 import { useLeadContext } from "../../../context";
 
-
-export default function LeadFilters({
-  onApply,
-  onClear,
-  onClose,
-  leads,
-}) {
+export default function LeadFilters({ onApply, onClear, onClose, leads }) {
   const [matchType, setMatchType] = useState("AND");
   const [filters, setFilters] = useState([{ field: "status", value: "" }]);
   const [selectedOptions, setSelectedOptions] = useState("");
-  const [seletedSubOptions, setSelectedSubOptions] = useState([]);
-  const [selectedsubFilter, setSelectedSubFilter] = useState("");
+  const [seletedSubOptions, setSelectedSubOptions] = useState(["New", "Qualified", "Converted", "Follow-Up"]);
+  const [selectedsubFilter, setSelectedSubFilter] = useState([]);
 
-// const FilterObjects={
-//   name:searchTerm,
-
-
-// }
-
-  
-    const { setSearchTerm,searchTerm } = useLeadContext();
+  const { setSearchTerm, searchTerm } = useLeadContext();
 
   const StatusArray = ["New", "Qualified", "Converted", "Follow-Up"];
   const SourceArray = ["Website", "Referral", "Social Media", "LinkedIn"];
@@ -32,7 +19,6 @@ export default function LeadFilters({
     Source: SourceArray,
   };
 
-
   useEffect(() => {
     console.log("Selected Options changed:", selectedOptions);
     setSelectedSubOptions(FilterObject[selectedOptions] || []);
@@ -40,12 +26,11 @@ export default function LeadFilters({
   }, [selectedOptions]);
 
   const handleFilterChange = (index, key, value) => {
-    const newObect = {selectedOptions:selectedsubFilter,}
+    const newObect = { selectedOptions: selectedsubFilter };
     const newFilters = [...filters];
     newFilters[index][key] = value;
     setFilters(newFilters);
     console.log("Filters updated:", newFilters);
-    
   };
 
   const addFilter = () => {
@@ -127,7 +112,7 @@ export default function LeadFilters({
             <div key={index} className="flex items-center gap-2 mb-3">
               {/* Field Dropdown */}
               <select
-              value={selectedOptions}
+                value={selectedOptions}
                 onChange={(e) => {
                   // handleFilterChange(index, "field", e.target.value);
                   setSelectedOptions(e.target.value); // ✅ move logic here
@@ -146,11 +131,11 @@ export default function LeadFilters({
                 value={selectedsubFilter}
                 onChange={(e) => {
                   handleFilterChange();
-                  setSelectedSubFilter(e.target.value); // moved here ✅
+                  setSelectedSubFilter(e.target.value);
                 }}
                 className="flex-grow border rounded-xl px-3 py-3 border-gray-300 bg-white "
               >
-                {seletedSubOptions.map((field) => (
+                {seletedSubOptions?.map((field) => (
                   <option key={field} value={field}>
                     {field}
                   </option>
